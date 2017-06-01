@@ -12,11 +12,9 @@ implicit none
 
     iteration=1000 !for placeholder space. ex. 1000 = 0th iteration
 
-    write (mfile, "(A4,I4,A11)") "data", iteration, "-matlab.txt"
     write (outfile, "(A4,I4,A4)") "data", iteration, ".txt"
-    write(cmdline, "(A59,I4,A8)") 'matlab -nodisplay -nosplash -nodesktop -wait -r "iteration=', iteration,';test"'
 
-    ! do data
+    ! do data stuff here!
     do i=1,10
         x(i) = i
     end do
@@ -31,8 +29,7 @@ implicit none
     do while (iteration < 1128)
 
         write (mfile, "(A4,I4,A11)") "data", iteration, "-matlab.txt"
-        write (outfile, "(A4,I4,A4)") "data", iteration, ".txt"
-        write(cmdline, "(A59,I4,A8)") 'matlab -nodisplay -nosplash -nodesktop -wait -r "iteration=', iteration,';test"'
+        write(cmdline, "(A53,I4,A8)") 'matlab -nodisplay -nosplash -nodesktop -r "iteration=', iteration,';test"'
 
         ! call matlab
         call execute_command_line (cmdline, wait=.true.)
@@ -48,18 +45,25 @@ implicit none
             stop
         endif
 
-        !fortran opens matlab file and reworks it
-		open (unit=iteration, file=mfile, status='old', &
-		    iostat=open_status, action='read', position='rewind')
-		if ( open_status /= 0 ) then
-		    print *, 'Could not open ',mfile,' for reading.', &
-			'iteration = ', iteration
-		    stop
-		endif
-		!got this code from http://www.cs.uwm.edu/~cs151/Bacon/Lecture/HTML/ch13s03.html
+        iteration = iteration + 1
+        write(outfile, "(A4,I4,A4)") "data", iteration, ".txt"
+     
+        ! fortran opens matlab file and reworks it
 
-        !data stuff
+        open (unit=iteration, file=mfile, status='old', &
+        iostat=open_status, action='read', position='rewind')
+        if ( open_status /= 0 ) then
+                print *, 'Could not open ',mfile,' for reading.', &
+                'iteration = ', iteration
+                    stop
+                endif
+        !got this code from http://www.cs.uwm.edu/~cs151/Bacon/Lecture/HTML/ch13s03.html
 
+        ! do data stuff here!
+
+        
+
+        ! write data stuff here!
         open(1, file=outfile, status='UNKNOWN')
         do i=1,10
             write(1,*) x(i), x(i)
@@ -69,18 +73,15 @@ implicit none
 
         !close file
         close(iteration, iostat=close_status)
-		if ( close_status /= 0 ) then
-		    print *, 'Error: Attempt to close a file that is not open.', &
-			'iteration = ', iteration
-		    stop
-		endif
-		!got this code from http://www.cs.uwm.edu/~cs151/Bacon/Lecture/HTML/ch13s03.html
+        if ( close_status /= 0 ) then
+            print *, 'Error: Attempt to close a file that is not open.', &
+            'iteration = ', iteration
+            stop
+        endif
+        !got this code from http://www.cs.uwm.edu/~cs151/Bacon/Lecture/HTML/ch13s03.html
 
-        iteration = iteration + 1
 
-        !because we increment at the very end, the 0th iteration of the fortran generation data will be overwritten
 
     end do
-
 
 end program outputdata
