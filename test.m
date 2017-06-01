@@ -6,11 +6,12 @@ outfile = sprintf('data%d-matlab.txt', iteration);
 M = dlmread(infile);
 
 [m, n] = size(M);
-N = zeros(n, m);
+N = mean(M, 2);
+A = (N(1) + N(2))/2;
 
-for i = 1:m
+for i = 1:2
     for j = 1:n
-        N(j, i) = M(i, j);
+        M(i, j) = A;
     end
 end
 
